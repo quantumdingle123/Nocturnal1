@@ -322,7 +322,7 @@ task.spawn(function()
 end)
 
 -- =========================================================================
--- CAMERA AND CHARACTER AIMBOT LOGIC
+-- CAMERA AND CHARACTER AIMBOT LOGIC (SHIFT LOCK)
 -- =========================================================================
 RunService.RenderStepped:Connect(function()
 	if aimbotTarget and aimbotTarget.Parent and alive() then
@@ -330,7 +330,9 @@ RunService.RenderStepped:Connect(function()
 		local targetHrp = aimbotTarget:FindFirstChild("HumanoidRootPart")
 		
 		if r and targetHrp then
+			-- Locks camera to target
 			camera.CFrame = CFrame.lookAt(camera.CFrame.Position, targetHrp.Position)
+			-- Physically forces the character's body to face the target
 			r.CFrame = CFrame.lookAt(r.Position, Vector3.new(targetHrp.Position.X, r.Position.Y, targetHrp.Position.Z))
 		end
 	end
@@ -507,14 +509,17 @@ task.spawn(function()
 						targetPos = DEST.Position -- Go to the -10 staging area if not in arena
 						shouldPath = true
 						targetHighlight.Adornee = nil
+						aimbotTarget = nil -- Disable aimbot when walking back
 					else
 						local target = getClosestPlayerInRing()
 						if target and target.Character then
 							targetHighlight.Adornee = target.Character
+							aimbotTarget = target.Character -- ENGAGE AIMBOT LOCK
 							local tr = target.Character:FindFirstChild("HumanoidRootPart")
 							if tr then targetPos = tr.Position; shouldPath = true end
 						else
 							targetHighlight.Adornee = nil
+							aimbotTarget = nil
 						end
 					end
 				else
@@ -580,7 +585,8 @@ task.spawn(function()
 						local target = getClosestPlayerInRing()
 						if target and target.Character then
 							local tr = target.Character:FindFirstChild("HumanoidRootPart")
-							if tr and (r.Position - tr.Position).Magnitude <= 3.5 then
+							-- REDUCED HALT DISTANCE TO 2.5 SO THEY GET RIGHT IN THEIR FACE TO ATTACK!
+							if tr and (r.Position - tr.Position).Magnitude <= 2.5 then
 								haltMovement = true
 							end
 						end
