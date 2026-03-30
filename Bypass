@@ -593,16 +593,13 @@ task.spawn(function()
 						local distToDest = (r.Position - DEST.Position).Magnitude
 						if distToDest <= 3.5 then haltMovement = true end
 					else
-						-- IN ARENA COMBAT: Do not rely on pathfinding. Walk directly to them!
+						-- IN ARENA COMBAT: NO DISTANCE LIMIT. CONSTANTLY WALK INTO THEM!
 						local target = getClosestPlayerInRing()
 						if target and target.Character then
 							local tr = target.Character:FindFirstChild("HumanoidRootPart")
 							if tr then
-								if (r.Position - tr.Position).Magnitude <= 2.5 then
-									haltMovement = true
-								else
-									directWalkTarget = tr.Position
-								end
+								-- Just constantly set this to their position so we walk forever
+								directWalkTarget = tr.Position 
 							end
 						end
 					end
